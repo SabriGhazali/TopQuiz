@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +31,9 @@ public class MainActivity extends AppCompatActivity {
         mGreetingText =  findViewById(R.id.activity_main_greeting_txt);
         mNameInput =  findViewById(R.id.activity_main_name_input);
         mPlayButton = findViewById(R.id.activity_main_play_btn);
-
         mPlayButton.setEnabled(false);
+
+         mUser=new User();
 
         mNameInput.addTextChangedListener(new TextWatcher() {
             @Override
