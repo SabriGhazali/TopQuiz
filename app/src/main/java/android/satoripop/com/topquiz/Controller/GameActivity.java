@@ -24,15 +24,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionBank mQuestionBank;
     private Question mCurrentQuestion;
     private int mNumberOfQuestions;
-    private int mScore=0;
+    private int mScore;
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
+    public static final String BUNDLE_STATE_SCORE = "currentScore";
+    public static final String BUNDLE_STATE_QUESTION = "currentQuestion";
     private boolean mEnableTouchEvents;
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(BUNDLE_STATE_SCORE,mScore);
+        outState.putInt(BUNDLE_STATE_QUESTION,mNumberOfQuestions);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        System.out.println("GameActivity :: onCreate()");
         mQuestionText= findViewById(R.id.activity_game_question_text);
         mAnswer1= findViewById(R.id.activity_game_answer1_btn);
         mAnswer2= findViewById(R.id.activity_game_answer2_btn);
@@ -41,8 +52,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mEnableTouchEvents = true;
 
 //Remlpissage Des Questions
+        if (savedInstanceState != null) {
+            mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
+            mNumberOfQuestions = savedInstanceState.getInt(BUNDLE_STATE_QUESTION);
+        } else {
+            mScore = 0;
+            mNumberOfQuestions = 4;
+        }
         mQuestionBank = this.generateQuestions();
-        mNumberOfQuestions = 4;
         mCurrentQuestion=mQuestionBank.getQuestion();
         displayQuestion(mCurrentQuestion);
 
@@ -171,6 +188,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        System.out.println("GameActivity :: onStart()");
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("GameActivity :: onStop()");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("GameActivity :: onDestroy()");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("GameActivity :: onPause()");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("GameActivity :: onResume()");
+
+    }
 }
 
 
