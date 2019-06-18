@@ -1,9 +1,11 @@
 package android.satoripop.com.topquiz.Controller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.satoripop.com.topquiz.Model.User;
 import android.satoripop.com.topquiz.R;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,9 +21,23 @@ public class MainActivity extends AppCompatActivity {
     private EditText mNameInput;
     private Button mPlayButton;
     private User mUser;
+    private static final int GAME_ACTIVITY_REQUEST_CODE = 42;
+    private SharedPreferences mPreferences;
+
+    public static final String PREF_KEY_SCORE = "PREF_KEY_SCORE";
+    public static final String PREF_KEY_FIRSTNAME = "PREF_KEY_FIRSTNAME";
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(GAME_ACTIVITY_REQUEST_CODE==requestCode && resultCode==RESULT_OK)
+        {int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE,0);
+            mPreferences.edit().putInt(PREF_KEY_SCORE,score).apply();
+            greetUser();
 
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +49,13 @@ public class MainActivity extends AppCompatActivity {
         mPlayButton = findViewById(R.id.activity_main_play_btn);
         mPlayButton.setEnabled(false);
 
-         mUser=new User();
+        mPreferences = getPreferences(MODE_PRIVATE);
+        greetUser();
+
+
+
+        mUser=new User();
+
 
         mNameInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -58,14 +80,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mUser.setFirstName(mNameInput.getText().toString());
-                startActivity(new Intent(MainActivity.this,GameActivity.class));
-
+                startActivityForResult(new Intent(MainActivity.this,GameActivity.class),GAME_ACTIVITY_REQUEST_CODE);
+                mPreferences.edit().putString(PREF_KEY_FIRSTNAME, mUser.getFirstName()).apply();
+                greetUser();
             }
         });
 
+    }
+    private void greetUser() {
+        String firstname = mPreferences.getString(PREF_KEY_FIRSTNAME, null);
 
+        if (null != firstname) {
+            int score = mPreferences.getInt(PREF_KEY_SCORE, 0);
 
-
+            String fulltext = "Welcome back, " + firstname
+                    + "!\nYour last score was " + score
+                    + ", will you do better this time?";
+            mGreetingText.setText(fulltext);
+            mNameInput.setText(firstname);
+            mNameInput.setSelection(firstname.length());
+            mPlayButton.setEnabled(true);
+        }
     }
 
 }
