@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.satoripop.com.topquiz.Model.Question;
 import android.satoripop.com.topquiz.Model.QuestionBank;
 import android.satoripop.com.topquiz.R;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -140,22 +141,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     displayQuestion(mCurrentQuestion);
                 }
             }
-        }, 2000); // LENGTH_SHORT is usually 2 second long
+        }, 1000); // LENGTH_SHORT is usually 1 second long
 
 
 
-        if (--mNumberOfQuestions == 0) {
-            // No question left, end the game
-           endGame();
-        } else {
-            mCurrentQuestion = mQuestionBank.getQuestion();
-            displayQuestion(mCurrentQuestion);
-        }
+
 
     }
 
     private void endGame() {
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Well done!")
                 .setMessage("Your score is " + mScore)
@@ -173,6 +168,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .create()
                 .show();
     }
+
 
 
 }

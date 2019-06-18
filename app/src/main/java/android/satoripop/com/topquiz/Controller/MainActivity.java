@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(GAME_ACTIVITY_REQUEST_CODE==requestCode && resultCode==RESULT_OK)
-        {int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE,0);
-            mPreferences.edit().putInt(PREF_KEY_SCORE,score).apply();
+        if (GAME_ACTIVITY_REQUEST_CODE == requestCode && resultCode == RESULT_OK) {
+            int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+            mPreferences.edit().putInt(PREF_KEY_SCORE, score).apply();
             greetUser();
 
         }
@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       //Referencement des objet
-        mGreetingText =  findViewById(R.id.activity_main_greeting_txt);
-        mNameInput =  findViewById(R.id.activity_main_name_input);
+        //Referencement des objet
+        mGreetingText = findViewById(R.id.activity_main_greeting_txt);
+        mNameInput = findViewById(R.id.activity_main_name_input);
         mPlayButton = findViewById(R.id.activity_main_play_btn);
         mPlayButton.setEnabled(false);
 
@@ -53,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
         greetUser();
 
 
-
-        mUser=new User();
+        mUser = new User();
 
 
         mNameInput.addTextChangedListener(new TextWatcher() {
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                mPlayButton.setEnabled(s.toString().length()!=0);
+                mPlayButton.setEnabled(s.toString().length() != 0);
 
             }
 
@@ -80,13 +79,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mUser.setFirstName(mNameInput.getText().toString());
-                startActivityForResult(new Intent(MainActivity.this,GameActivity.class),GAME_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(MainActivity.this, GameActivity.class), GAME_ACTIVITY_REQUEST_CODE);
                 mPreferences.edit().putString(PREF_KEY_FIRSTNAME, mUser.getFirstName()).apply();
                 greetUser();
             }
         });
 
     }
+
     private void greetUser() {
         String firstname = mPreferences.getString(PREF_KEY_FIRSTNAME, null);
 
