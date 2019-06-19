@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/back"
     tools:context=".Controller.GameActivity">
 
     <TextView
@@ -28,7 +29,7 @@
         android:layout_margin="5dp"
         android:layout_weight="1"
         android:textColor="@color/colorAccent"
-        android:background="@android:color/white"
+        android:background="@color/backButton"
         android:textSize="20sp"
         android:text="Answer1"/>
 
@@ -39,7 +40,7 @@
         android:layout_margin="5dp"
         android:layout_weight="1"
         android:textColor="@color/colorAccent"
-        android:background="@android:color/white"
+        android:background="@color/backButton"
         android:textSize="20sp"
         android:text="Answer2"/>
 
@@ -50,7 +51,7 @@
         android:layout_margin="5dp"
         android:layout_weight="1"
         android:textColor="@color/colorAccent"
-        android:background="@android:color/white"
+        android:background="@color/backButton"
         android:textSize="20sp"
         android:text="Answer3"/>
 
@@ -61,7 +62,7 @@
         android:layout_margin="5dp"
         android:layout_weight="1"
         android:textColor="@color/colorAccent"
-        android:background="@android:color/white"
+        android:background="@color/backButton"
         android:textSize="20sp"
         android:text="Answer4"/>
 

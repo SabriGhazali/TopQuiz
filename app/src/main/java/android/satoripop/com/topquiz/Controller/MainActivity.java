@@ -3,6 +3,7 @@ package android.satoripop.com.topquiz.Controller;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.satoripop.com.topquiz.Model.History;
 import android.satoripop.com.topquiz.Model.User;
 import android.satoripop.com.topquiz.R;
 import android.support.annotation.Nullable;
@@ -14,18 +15,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mGreetingText;
     private EditText mNameInput;
-    private Button mPlayButton;
+    private Button mPlayButton,mHistoryButton;
     private User mUser;
     private static final int GAME_ACTIVITY_REQUEST_CODE = 42;
     private SharedPreferences mPreferences;
 
     public static final String PREF_KEY_SCORE = "PREF_KEY_SCORE";
     public static final String PREF_KEY_FIRSTNAME = "PREF_KEY_FIRSTNAME";
+    public static final String PREF_KEY_LIST_HISTORY = "PREF_KEY_LIST_HISTORY";
+
+    private History mHistory;
 
 
     @Override
@@ -34,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
         if (GAME_ACTIVITY_REQUEST_CODE == requestCode && resultCode == RESULT_OK) {
             int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
             mPreferences.edit().putInt(PREF_KEY_SCORE, score).apply();
+
+            mUser.setScore(score);
+            mHistory.addUser(mUser);
+
+
+            Gson gson =new Gson();
+            String json =gson.toJson(mHistory.getUserHistory());
+            mPreferences.edit().putString(PREF_KEY_LIST_HISTORY,json).apply();
+
+
             greetUser();
 
         }
@@ -42,19 +63,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("MainActivity :: onCreate()");
         setContentView(R.layout.activity_main);
+        mPreferences=getPreferences(MODE_PRIVATE);
         //Referencement des objet
         mGreetingText = findViewById(R.id.activity_main_greeting_txt);
         mNameInput = findViewById(R.id.activity_main_name_input);
         mPlayButton = findViewById(R.id.activity_main_play_btn);
+        mHistoryButton= findViewById(R.id.activity_main_history_btn);
+        //Disable Buttons
         mPlayButton.setEnabled(false);
 
-        mPreferences = getPreferences(MODE_PRIVATE);
+        //Init
+        mUser = new User();
+        mHistory=new History();
+
+
+
+
+
+
+
         greetUser();
 
-
-        mUser = new User();
 
 
         mNameInput.addTextChangedListener(new TextWatcher() {
@@ -86,6 +116,61 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        mHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              Intent intent=  new Intent(MainActivity.this,HistoryActivity.class);
+              Gson gson =new Gson();
+              String json =gson.toJson(mHistory.getUserHistory());
+              intent.putExtra("History", json);
+              startActivity(intent);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        init_History(load_History());
+        Enable_Disable_History();
+
+
+
+
+
+    }
+
+    private void Enable_Disable_History() {
+
+        if(mHistory.getUserHistory().size()!=0)
+        mHistoryButton.setEnabled(true);
+        else
+        mHistoryButton.setEnabled(false);
+
+
+
+    }
+
+
+    private List<User> load_History()
+    {
+        Gson gson =new Gson();
+        String json =gson.toJson(mHistory.getUserHistory());
+        json=  mPreferences.getString(PREF_KEY_LIST_HISTORY,null);
+        Type type=new TypeToken<ArrayList<User>>(){}.getType();
+        return gson.fromJson(json,type);
+
+    }
+
+
+    private void init_History(List<User> history) {
+        if(history==null)
+        {mHistory=new History();}
+        else
+        {mHistory=new History(history);}
     }
 
     private void greetUser() {
@@ -101,38 +186,13 @@ public class MainActivity extends AppCompatActivity {
             mNameInput.setText(firstname);
             mNameInput.setSelection(firstname.length());
             mPlayButton.setEnabled(true);
+
         }
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("MainActivity :: onStart()");
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("MainActivity :: onStop()");
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        System.out.println("MainActivity :: onDestroy()");
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        System.out.println("MainActivity :: onPause()");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("MainActivity :: onResume()");
-    }
 }
 
